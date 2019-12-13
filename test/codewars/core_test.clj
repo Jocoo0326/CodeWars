@@ -24,3 +24,7 @@
     (def vr ["A" "B" "C" "D"])
     (def res [["A" 0] ["B" 1290] ["C" 515] ["D" 600]])
     (is (= (stock-list ur vr) res))))
+
+(deftest a-test3
+  (testing "Test 3"
+    (is (= (evaporator 10 10 10) 22))))

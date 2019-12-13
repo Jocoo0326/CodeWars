@@ -56,3 +56,11 @@
       (map #(vector % (rmap %)) list-of-cat))
     []))
 
+(defn evaporator [content, evap_per_day, threshold]
+  ;; your code
+  (loop [rest 1
+         n 0]
+    (if (< rest (/ threshold 100))
+      n
+      (recur (* rest (- 1 (/ evap_per_day 100))) (inc n))))
+)
