@@ -28,3 +28,39 @@
 (deftest a-test3
   (testing "Test 3"
     (is (= (evaporator 10 10 10) 22))))
+
+(deftest test-accum
+  (testing "Accum, Basic tests"
+    (is (= (accum "ZpglnRxqenU"), "Z-Pp-Ggg-Llll-Nnnnn-Rrrrrr-Xxxxxxx-Qqqqqqqq-Eeeeeeeee-Nnnnnnnnnn-Uuuuuuuuuuu"))
+    (is (= (accum "NyffsGeyylB"), "N-Yy-Fff-Ffff-Sssss-Gggggg-Eeeeeee-Yyyyyyyy-Yyyyyyyyy-Llllllllll-Bbbbbbbbbbb"))
+    (is (= (accum "MjtkuBovqrU"), "M-Jj-Ttt-Kkkk-Uuuuu-Bbbbbb-Ooooooo-Vvvvvvvv-Qqqqqqqqq-Rrrrrrrrrr-Uuuuuuuuuuu"))
+    (is (= (accum "EvidjUnokmM"), "E-Vv-Iii-Dddd-Jjjjj-Uuuuuu-Nnnnnnn-Oooooooo-Kkkkkkkkk-Mmmmmmmmmm-Mmmmmmmmmmm"))
+    (is (= (accum "HbideVbxncC"), "H-Bb-Iii-Dddd-Eeeee-Vvvvvv-Bbbbbbb-Xxxxxxxx-Nnnnnnnnn-Cccccccccc-Ccccccccccc"))
+))
+
+(deftest a-test1
+  (testing "partlist" 
+    (test-assert (partlist ["I", "wish", "I", "hadn't", "come"]),
+      '[("I", "wish I hadn't come"), ("I wish", "I hadn't come"), ("I wish I", "hadn't come"), ("I wish I hadn't", "come")])
+    (test-assert (partlist ["cdIw", "tzIy", "xDu", "rThG"]),
+      '[("cdIw", "tzIy xDu rThG"), ("cdIw tzIy", "xDu rThG"), ("cdIw tzIy xDu", "rThG")])
+    (test-assert (partlist ["vJQ", "anj", "mQDq", "sOZ"]),
+      '[("vJQ", "anj mQDq sOZ"), ("vJQ anj", "mQDq sOZ"), ("vJQ anj mQDq", "sOZ")])
+))
+
+(deftest test-create-phone-number
+  (are [arr exp] (= (create-phone-number arr) exp)
+    [1 2 3 4 5 6 7 8 9 0] "(123) 456-7890"
+    [1 1 1 1 1 1 1 1 1 1] "(111) 111-1111"
+    [4 7 8 1 5 7 9 9 7 1] "(478) 157-9971"
+    [7 8 0 2 2 1 7 5 1 3] "(780) 221-7513"))
+
+(deftest example-tests
+  (are [xs answer] (= (find-odd xs) answer)
+    [20 1 -1 2 -2 3 3 5 5 1 2 4 20 4 -1 -2 5] 5
+    [1 1 2 -2 5 2 4 4 -1 -2 5] -1
+    [20 1 1 2 2 3 3 5 5 4 20 4 5] 5
+    [10] 10
+    [1 1 1 1 1 1 10 1 1 1 1] 10
+    [5 4 3 2 1 5 4 3 2 10 10] 1
+    ))

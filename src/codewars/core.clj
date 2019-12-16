@@ -51,16 +51,39 @@
                       (update acc cat + num)
                       acc)))
                 m
-                list-of-books
-                )]
+                list-of-books)]
       (map #(vector % (rmap %)) list-of-cat))
     []))
 
 (defn evaporator [content, evap_per_day, threshold]
-  ;; your code
-  (loop [rest 1
-         n 0]
-    (if (< rest (/ threshold 100))
-      n
-      (recur (* rest (- 1 (/ evap_per_day 100))) (inc n))))
-)
+  (count
+   (take-while
+    #(> % threshold)
+    (iterate #(* % (/ (- 100 evap_per_day) 100)) 100))))
+
+(defn accum [s]
+  (clojure.string/join "-"
+                       (map-indexed
+                        (fn [idx elm]
+                          (clojure.string/capitalize
+                           (apply str
+                                  (repeat (inc idx) elm)))) s)))
+
+(defn partlist [arr]
+  (mapv
+   #(vector (clojure.string/join " " (take % arr))
+            (clojure.string/join " " (drop % arr)))
+   (range 1 (count arr))))
+
+(defn create-phone-number [nums]
+  (let [[f3 rest] (split-at 3 nums)
+        [f36 l4] (split-at 3 rest)]
+    (apply str "(" (apply str f3) ") " (apply str f36) "-" l4)))
+
+(defn find-odd [xs]
+  (ffirst (filter (fn [[k v]] (odd? v))
+                 (frequencies xs))))
+
+(defn find-odd [xs] (reduce bit-xor xs))
+
+
