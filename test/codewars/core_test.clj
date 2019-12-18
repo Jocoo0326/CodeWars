@@ -39,7 +39,7 @@
 ))
 
 (deftest a-test1
-  (testing "partlist" 
+  (testing "partlist"
     (test-assert (partlist ["I", "wish", "I", "hadn't", "come"]),
       '[("I", "wish I hadn't come"), ("I wish", "I hadn't come"), ("I wish I", "hadn't come"), ("I wish I hadn't", "come")])
     (test-assert (partlist ["cdIw", "tzIy", "xDu", "rThG"]),
@@ -64,3 +64,21 @@
     [1 1 1 1 1 1 10 1 1 1 1] 10
     [5 4 3 2 1 5 4 3 2 10 10] 1
     ))
+
+(deftest test-prod-fib
+  (is (= (product-fib 4895) [55 89 true]))
+  (is (= (product-fib 5895) [89 144 false])))
+
+(deftest test-bouncing-balls
+  (is (= (bouncing-balls 3 0.66 1.5) 3))
+  (is (= (bouncing-balls 30 0.66 1.5) 15)))
+
+(deftest test-play-pass
+  (is (= (play-pass "I LOVE YOU!!!" 1) "!!!vPz fWpM J"))
+  (is (= (play-pass "MY GRANMA CAME FROM NY ON THE 23RD OF APRIL 2015" 2)
+         "4897 NkTrC Hq fT67 GjV Pq aP OqTh gOcE CoPcTi aO")))
+
+(deftest test-hamming
+  (doseq [n (range 20) :let [hams [1 2 3 4 5 6 8 9 10 12 15 16 18 20 24 25 27 30 32 36]
+                             ham (nth hams n)]]
+    (is (= ham (hamming n)))))

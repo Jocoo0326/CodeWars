@@ -82,8 +82,85 @@
 
 (defn find-odd [xs]
   (ffirst (filter (fn [[k v]] (odd? v))
-                 (frequencies xs))))
+                  (frequencies xs))))
 
 (defn find-odd [xs] (reduce bit-xor xs))
 
+(defn product-fib [prod]
+  (let [fibseq (iterate (fn [[a b]] [b (+' a b)]) [1 1])]
+    (first (filter some? (map (fn [[l r]]
+                                (let [pd (*' l r)]
+                                  (if (>= pd prod)
+                                    [l r (= prod pd)]))) fibseq)))))
 
+(defn bouncing-balls [h bounce window]
+  (if (and (> h 0)
+           (> bounce 0)
+           (< bounce 1)
+           (< window h))
+    (count (take-while #(> (first %) window)
+                       (iterate (fn [[hgt dir]]
+                                  (if (> dir 0)
+                                    [(* hgt bounce) (* -1 dir)]
+                                    [hgt (* -1 dir)]))
+                                [h 1])))
+    -1))
+
+(defn play-pass [s n]
+  (letfn [(shift-alpha [c]
+            (cond
+              (Character/isLowerCase c)
+              (char (+ (int \a) (mod (+ (- (int c) (int \a)) n) 26)))
+              (Character/isUpperCase c)
+              (char (+ (int \A) (mod (+ (- (int c) (int \A)) n) 26)))
+              (Character/isDigit c)
+              (char (+ (int \0) (- 9 (- (int c) (int \0)))))
+              :else c))
+          (upcase-even [idx elm]
+            (if (even? idx)
+              (clojure.string/upper-case elm)
+              (clojure.string/lower-case elm)))]
+    (->> s
+         (map shift-alpha)
+         (map-indexed upcase-even)
+         reverse
+         (apply str))))
+
+(defn hamming [n]
+  (take n
+        (iterate #(let [init-prims (transient {2 0 3 0 5 0})]
+                    (loop [prims init-prims v (inc %) cur v]
+                      (cond
+                        (zero? (mod v 2)) (recur (update prims 2 inc) (/ v 2) cur)
+                        (zero? (mod v 3)) (recur (update prims 3 inc) (/ v 3) cur)
+                        (zero? (mod v 5)) (recur (update prims 5 inc) (/ v 5) cur)
+                        (= 1 v) (* (power 2 (get prims 2))
+                                   (power 3 (get prims 3))
+                                   (power 5 (get prims 5)))
+                        :else (recur init-prims (inc cur) (inc cur))
+                        ))) 1))
+  )
+
+(defn hamming [n]
+  (letfn [(min-in-seq-fn [nr]
+            (fn [seq]
+              (let [dest (unchecked-divide-int (last seq) nr)
+                    idx (java.util.Collections seq dest)]
+                (if (< idx 0)
+                  ))))]
+    (loop [h-seq [1] i 0]
+      (if (< i n)
+        (recur
+         (conj h-seq
+               (min
+                ((min-in-seq-fn 2) h-seq)
+                ((min-in-seq-fn 3) h-seq)
+                ((min-in-seq-fn 5) h-seq)))
+         (inc i))
+        (last h-seq)))))
+
+(hamming 2000)
+
+(defn bin-search [])
+
+(java.util.Collections/binarySearch [1 2 3 4 5 6 8 9 10] 11)
