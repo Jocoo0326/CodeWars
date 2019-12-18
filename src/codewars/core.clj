@@ -144,10 +144,9 @@
 (defn hamming [n]
   (letfn [(min-in-seq-fn [nr]
             (fn [seq]
-              (let [dest (unchecked-divide-int (last seq) nr)
-                    idx (java.util.Collections seq dest)]
-                (if (< idx 0)
-                  ))))]
+              (let [dest (long (/ (last seq) nr))
+                    idx (java.util.Collections/binarySearch seq dest)]
+                (* nr (nth seq (if (< idx 0) (- (inc idx)) (inc idx)))))))]
     (loop [h-seq [1] i 0]
       (if (< i n)
         (recur
@@ -160,7 +159,3 @@
         (last h-seq)))))
 
 (hamming 2000)
-
-(defn bin-search [])
-
-(java.util.Collections/binarySearch [1 2 3 4 5 6 8 9 10] 11)
