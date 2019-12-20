@@ -127,26 +127,15 @@
          (apply str))))
 
 (defn hamming [n]
-  (take n
-        (iterate #(let [init-prims (transient {2 0 3 0 5 0})]
-                    (loop [prims init-prims v (inc %) cur v]
-                      (cond
-                        (zero? (mod v 2)) (recur (update prims 2 inc) (/ v 2) cur)
-                        (zero? (mod v 3)) (recur (update prims 3 inc) (/ v 3) cur)
-                        (zero? (mod v 5)) (recur (update prims 5 inc) (/ v 5) cur)
-                        (= 1 v) (* (power 2 (get prims 2))
-                                   (power 3 (get prims 3))
-                                   (power 5 (get prims 5)))
-                        :else (recur init-prims (inc cur) (inc cur))
-                        ))) 1))
-  )
-
-(defn hamming [n]
   (letfn [(min-in-seq-fn [nr]
             (fn [seq]
               (let [dest (long (/ (last seq) nr))
                     idx (java.util.Collections/binarySearch seq dest)]
-                (* nr (nth seq (if (< idx 0) (- (inc idx)) (inc idx)))))))]
+                (->> idx
+                     inc
+                     Math/abs
+                     (nth seq)
+                     (* nr)))))]
     (loop [h-seq [1] i 0]
       (if (< i n)
         (recur
@@ -158,4 +147,24 @@
          (inc i))
         (last h-seq)))))
 
-(hamming 2000)
+(defn hamming [n]
+  (loop [i 0 pool (sorted-set 1)]
+    (if (< i n)
+      (let [m (first pool)]
+        (recur (inc i) (disj
+                        (apply conj pool (map (partial *' m) [2 3 5]))
+                        m)))
+      (first pool))))
+
+(defn hamming [n]
+  (loop [results [1]
+         i 0
+         exps [0 0 0]]
+    (if (>= i n)
+      (last results)
+      (let [hams (map-indexed #(* (results (exps %)) %2) [2 3 5])
+            min-val (apply min hams)
+            exp-changes (map #(if (= % min-val) 1 0) hams)
+            new-exps (map + exps exp-changes)]
+        (println results exps hams new-exps)
+        (recur (conj results min-val) (inc i) (vec new-exps))))))
